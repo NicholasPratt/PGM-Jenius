@@ -1,0 +1,14 @@
+.DS_Store
+
+# Local agent/project notes
+.claude/
+CLAUDE.md
+CODEX_MEMORY.md
+mpc1000_128xl242.osl
+
+# CMake build outputs
+cpp/build/
+cpp/build-clang/
+cpp/build-llvm-runtime/
+cpp/build-pgm-jenius/
+cpp/build-pgm-jenius-llvm/

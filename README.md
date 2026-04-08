@@ -1,8 +1,8 @@
-# mpcmaid
+# PGM-Jenius
 
-![](https://github.com/cyriux/mpcmaid/blob/master/MpcMaid/packaging/icon128.png)
+![](./PGM-Jenius/packaging/icon128.png)
 
-MPC Maid is a software editor for the Akai MPC 1000, MPC 2500, and MPC 500, for Mac, PC, and other platforms (Java) 
+PGM-Jenius is a software editor for the Akai MPC 1000, MPC 2500, and MPC 500, for Mac, PC, and other platforms (Java) 
 
 - Switch between the MPC 500 12-pads layout or the MPC 1000 16-pads layout (also takes care of the correct number of filters and sliders thanks to the built-in machine profiles).
 
@@ -19,11 +19,11 @@ MPC Maid is a software editor for the Akai MPC 1000, MPC 2500, and MPC 500, for 
 
 # Installation
 
-Download the unique .jar directly from [Github](https://github.com/cyriux/mpcmaid/blob/master/MpcMaid/mpcmaid_beta.jar)
+Download the unique `.jar` directly from the packaged legacy app in [`PGM-Jenius/`](./PGM-Jenius/).
 
-Double-click on it, MPC Maid must show. 
+Double-click on it, PGM-Jenius must show. 
 
-View the PDF documentation [here](https://github.com/cyriux/mpcmaid/blob/master/MpcMaid/documentation/MPCMaid_UserManual.pdf), or download it [here](https://github.com/cyriux/mpcmaid/raw/master/MpcMaid/documentation/MPCMaid_UserManual.pdf)
+View the PDF documentation in [`PGM-Jenius/documentation/`](./PGM-Jenius/documentation/).
 
 
 # Requirements
@@ -33,17 +33,17 @@ In Windows, if Winzip or Winrar tries to decompress the file this probably means
 
 # 
 
-MPC Maid is offered for free for everyone so that you can get the best out of your MPC. You can use it forever without any limitation. If you feel like supporting this project then you can send feedback, contribute to the code and testing, and you can also donate what you want.
+PGM-Jenius is offered for free for everyone so that you can get the best out of your MPC. You can use it forever without any limitation. If you feel like supporting this project then you can send feedback, contribute to the code and testing, and you can also donate what you want.
 
 # Credits
 
 [cyrille.martraire.com](http://cyrille.martraire.com)
 
-[Project homepage](https://github.com/cyriux/mpcmaid)
+[Project homepage](https://github.com/your-org/PGM-Jenius)
 
 ## Inspiration
 
-MPC Maid is strongly inspired by the excellent [MPC Pad 187](http://mybunnyhug.com) by Stephen Norum, that is unfortunately not portable on other OS'es than Mac OS X.
+PGM-Jenius is strongly inspired by the excellent [MPC Pad 187](http://mybunnyhug.com) by Stephen Norum, that is unfortunately not portable on other OS'es than Mac OS X.
 
 ## MPC1000 File Format
 

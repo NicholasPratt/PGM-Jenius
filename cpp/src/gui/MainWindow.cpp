@@ -186,7 +186,6 @@ void MainWindow::setup_menus() {
         });
     };
     add_model("MPC1000");
-    add_model("MPC500");
 
     // macOS native menu bar
     menuBar()->setNativeMenuBar(true);
@@ -220,18 +219,20 @@ void MainWindow::load_program(const QString& path) {
 void MainWindow::show_program_panel() {
     if (!program_) return;
 
-    tabs_             = new QTabWidget(this);
-    pgm_panel_        = new ProgramPanel(program_.get(), profile_, tabs_);
-    chop_panel_       = new ChopSlicesPanel(program_.get(), tabs_);
-    multisample_panel_= new MultisamplePanel(program_.get(), tabs_);
-    batch_panel_      = new BatchCreatePanel(tabs_);
-    folder_assign_panel_ = new FolderAssignPanel(program_.get(), tabs_);
+    tabs_                  = new QTabWidget(this);
+    pgm_panel_             = new ProgramPanel(program_.get(), profile_, tabs_);
+    chop_panel_            = new ChopSlicesPanel(program_.get(), tabs_);
+    multisample_panel_     = new MultisamplePanel(program_.get(), tabs_);
+    batch_panel_           = new BatchCreatePanel(tabs_);
+    folder_assign_panel_   = new FolderAssignPanel(program_.get(), tabs_);
+    jjos_instrument_panel_ = new JJOSInstrumentPanel(program_.get(), tabs_);
 
-    tabs_->addTab(pgm_panel_,          "Program Editor");
-    tabs_->addTab(chop_panel_,         "Chop Slices");
-    tabs_->addTab(multisample_panel_,  "Multisample");
-    tabs_->addTab(folder_assign_panel_, "Folder Assign");
-    tabs_->addTab(batch_panel_,        "Batch Create");
+    tabs_->addTab(pgm_panel_,             "Program Editor");
+    tabs_->addTab(chop_panel_,            "Chop Slices");
+    tabs_->addTab(multisample_panel_,     "Multisample");
+    tabs_->addTab(folder_assign_panel_,   "Folder Assign");
+    tabs_->addTab(jjos_instrument_panel_, "JJOS Instrument");
+    tabs_->addTab(batch_panel_,           "Batch Create");
 
     // Let the pad grid play samples from the same directory as the .pgm file
     if (!current_path_.isEmpty())
@@ -245,19 +246,20 @@ void MainWindow::show_program_panel() {
             setWindowTitle("* " + title);
     });
 
-    connect(folder_assign_panel_, &FolderAssignPanel::sample_dir_selected, this, [this](const QString& dir) {
-        if (pgm_panel_)
-            pgm_panel_->set_sample_dir(dir);
-    });
-
-    connect(folder_assign_panel_, &FolderAssignPanel::program_modified, this, [this]() {
-        if (pgm_panel_)
-            pgm_panel_->load();
-
+    auto update_sample_dir = [this](const QString& dir) {
+        sample_dir_ = dir;
+        if (pgm_panel_) pgm_panel_->set_sample_dir(dir);
+    };
+    auto mark_modified = [this]() {
+        if (pgm_panel_) pgm_panel_->load();
         QString title = windowTitle();
-        if (!title.startsWith("*"))
-            setWindowTitle("* " + title);
-    });
+        if (!title.startsWith("*")) setWindowTitle("* " + title);
+    };
+
+    connect(folder_assign_panel_,   &FolderAssignPanel::sample_dir_selected,   this, update_sample_dir);
+    connect(folder_assign_panel_,   &FolderAssignPanel::program_modified,       this, mark_modified);
+    connect(jjos_instrument_panel_, &JJOSInstrumentPanel::sample_dir_selected,  this, update_sample_dir);
+    connect(jjos_instrument_panel_, &JJOSInstrumentPanel::program_modified,     this, mark_modified);
 }
 
 void MainWindow::on_open() {
@@ -289,6 +291,7 @@ void MainWindow::on_save() {
         QString title = windowTitle();
         if (title.startsWith("* ")) setWindowTitle(title.mid(2));
         statusBar()->showMessage("Saved: " + current_path_);
+        show_copy_samples_dialog();
     } catch (const std::exception& e) {
         QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
     }
@@ -317,4 +320,28 @@ void MainWindow::on_save_as() {
 void MainWindow::on_switch_profile(const QString& profile_name) {
     profile_ = Profile::get(profile_name.toStdString());
     if (program_) show_program_panel();
+}
+
+void MainWindow::show_copy_samples_dialog() {
+    if (!program_ || current_path_.isEmpty()) return;
+
+    const QString dest_dir = QFileInfo(current_path_).absolutePath();
+
+    // Build search dirs: the .pgm's own directory plus any known sample dir
+    QStringList search_dirs;
+    search_dirs << dest_dir;
+    if (!sample_dir_.isEmpty() && sample_dir_ != dest_dir)
+        search_dirs << sample_dir_;
+    // Also try the dir the .pgm was loaded from (may differ after Save As)
+    const QString pgm_dir = QFileInfo(current_path_).absolutePath();
+    if (!pgm_dir.isEmpty() && !search_dirs.contains(pgm_dir))
+        search_dirs << pgm_dir;
+    search_dirs.removeDuplicates();
+
+    CopySamplesDialog dlg(program_.get(), dest_dir, search_dirs, this);
+
+    // Skip the dialog entirely when there's nothing to copy
+    if (!dlg.has_copyable_samples()) return;
+
+    dlg.exec();
 }

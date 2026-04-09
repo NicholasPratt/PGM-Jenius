@@ -50,6 +50,8 @@ set(SOURCES
     src/gui/MultisamplePanel.cpp
     src/gui/BatchCreatePanel.cpp
     src/gui/FolderAssignPanel.cpp
+    src/gui/JJOSInstrumentPanel.cpp
+    src/gui/CopySamplesDialog.cpp
 )
 
 qt_add_executable(pgm_jenius ${SOURCES})
